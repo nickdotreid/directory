@@ -1,4 +1,5 @@
 # Django settings for directory project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -124,6 +125,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'members',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -154,3 +156,8 @@ LOGGING = {
         },
     }
 }
+
+if 'HEROKU' in os.environ:
+    from heroku import *
+else:
+    from development import *
