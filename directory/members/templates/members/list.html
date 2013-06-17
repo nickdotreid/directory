@@ -1,3 +1,8 @@
-{% for member in members  %}
+{% extends "base.html" %}
+
+{% block content %}
+	{{block.super}}
+	{% for member in members  %}
 	<a href="member.url">{{member.name}}</a>
-{% endfor %}
+	{% endfor %}
+{% endblock content %}
