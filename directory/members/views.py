@@ -11,10 +11,12 @@ from django.contrib import messages
 
 from random import shuffle
 
-def detail(request, key):
+def detail(request, key, others=4):
 	member = get_object_or_404(Member, key=key)
+	members = Member.objects.exclude(key=key).order_by('?')[:others]
 	return render(request, 'members/detail.html', {
 		'member':member,
+		'members':members,
 	})
 
 def list(request):
