@@ -11,6 +11,12 @@ from django.contrib import messages
 
 from random import shuffle
 
+def detail(request, key):
+	member = get_object_or_404(Member, key=key)
+	return render(request, 'members/detail.html', {
+		'member':member,
+	})
+
 def list(request):
 	members = Member.objects.all()
 	shuffle(members)

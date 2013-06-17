@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block header %}
+	<h1>{{member.name}}</h1>
+{% endblock header %}
+
+{% block content %}
+	<a href="{{member.website}}">Visit {{member.name}}'s website</a>
+{% endblock content %}
