@@ -9,9 +9,11 @@ from members.models import Member
 
 from django.contrib import messages
 
+from random import shuffle
+
 def list(request):
 	members = Member.objects.all()
-	#randomize
+	shuffle(members)
 	return render(request, 'members/list.html',{
 			'members': members,
 		})
