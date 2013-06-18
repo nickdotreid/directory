@@ -16,6 +16,8 @@ class Member(User):
 	def save(self):
 		if not self.key:
 			self.key = random_id(ID_FIELD_LENGTH)
+		if not self.username:
+			self.username = self.email
 		super(Member, self).save()
 
 	def __unicode__(self):
