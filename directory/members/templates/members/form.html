@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+	{% if member %}
+		<p>Hello, {{member.name}}! Please edit your information below.</p>
+	{% else %}
+		<p>Please create a new profile below.</p>
+	{% endif %}
+	{% crispy form %}
+{% endblock content %}
