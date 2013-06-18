@@ -13,8 +13,6 @@ from members.models import Member
 
 from django.contrib import messages
 
-from random import shuffle
-
 def edit(request, key=None):
 	member = get_object_or_None(Member, key=key)
 	MemberForm = make_edit_form()
@@ -47,8 +45,7 @@ def make_edit_form():
 
 
 def list(request):
-	members = Member.objects.all()
-	shuffle(members)
+	members = Member.objects.order_by('?').all()
 	return render(request, 'members/list.html',{
 			'members': members,
 		})
