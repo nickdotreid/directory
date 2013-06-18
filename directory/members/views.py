@@ -3,6 +3,7 @@ from annoying.functions import get_object_or_None
 from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseRedirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
+import json
 
 from django.views.decorators.csrf import csrf_protect
 
@@ -44,8 +45,24 @@ def make_edit_form():
 
 
 
-def list(request):
-	members = Member.objects.order_by('?').all()
+def list(request, visible=5):
+	if 'member' in request.REQUEST:
+		key = request.REQUEST['member']
+		members = []
+		members.append(Member.objects.get(key=key))
+		for member in Member.objects.exclude(key=key).order_by('?').all():
+			members.append(member)
+	else:
+		members = Member.objects.order_by('?').all()
+	if 'all' not in request.REQUEST:
+		members = members[:visible]
+	if request.is_ajax():
+		return HttpResponse(
+			json.dumps({
+				'members': members,
+			}),
+			'application/json'
+			)
 	return render(request, 'members/list.html',{
 			'members': members,
 		})
