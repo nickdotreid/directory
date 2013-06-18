@@ -26,11 +26,14 @@ def detail(request, key, others=4):
 def edit(request, key=None):
 	member = get_object_or_None(Member, key=key)
 	MemberForm = make_edit_form()
-	form = None
-	if member:
-		form = MemberForm(instance=member)
-	else:
-		form = MemberForm()
+	if request.method == 'POST':
+		form = MemberForm(request.POST, instance=member)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect(reverse(edit,kwargs={
+				'key':form.instance.key,
+				}))
+	form = MemberForm(instance=member)
 	return render(request, 'members/form.html', {
 		'member': member,
 		'form':form
