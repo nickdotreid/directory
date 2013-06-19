@@ -17,8 +17,7 @@ from members.models import Member
 from django.contrib import messages
 
 def edit(request, key=None):
-	member = get_object_or_None(Member, key=key)
-	MemberForm = make_edit_form()
+	member = get_object_or_404(Member, key=key)
 	if request.method == 'POST':
 		form = MemberForm(request.POST, instance=member)
 		if form.is_valid():
@@ -32,17 +31,14 @@ def edit(request, key=None):
 		'form':form
 		})
 
-from django.forms import ModelForm
-def make_edit_form():
-	class MemberForm(forms.ModelForm):
-		def __init__(self, *args, **kwargs):
-			super(forms.ModelForm, self).__init__(*args, **kwargs)
-			self.helper = FormHelper()
-			self.helper.add_input(Submit('submit', 'Save'))
-		class Meta:
-			model = Member
-			fields = ['name', 'title', 'website']
-	return MemberForm
+class MemberForm(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(forms.ModelForm, self).__init__(*args, **kwargs)
+		self.helper = FormHelper()
+		self.helper.add_input(Submit('submit', 'Save'))
+	class Meta:
+		model = Member
+		fields = ['name', 'title', 'website']
 
 def delete(request, key=None):
 	member = get_object_or_404(Member, key=key)
