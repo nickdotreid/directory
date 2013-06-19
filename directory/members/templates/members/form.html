@@ -2,13 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-	{% if member %}
-		<p>Hello, {{member.name}}! Please edit your information below.</p>
-	{% else %}
-		<p>Please create a new profile below.</p>
-	{% endif %}
+	<p>Please edit your information below.</p>
 	{% crispy form %}
-	{% if member %}
 	<a href="{% url 'members.views.delete' member.key %}" class="button button-delete">Remove Profile</a>
-	{% endif %}
 {% endblock content %}
