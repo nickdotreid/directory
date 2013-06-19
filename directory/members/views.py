@@ -16,14 +16,28 @@ from members.models import Member
 
 from django.contrib import messages
 
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import send_mail
+
+from django.contrib.auth import authenticate, login
+
 def edit(request, key=None):
 	member = get_object_or_404(Member, key=key)
+	if 'token' in request.REQUEST:
+			token = request.REQUEST['token']
+			token_gen = PasswordResetTokenGenerator()
+			if token_gen.check_token(member,token):
+				member.backend = 'django.contrib.auth.backends.ModelBackend' # from: http://stackoverflow.com/questions/2787650/manually-logging-in-a-user-without-password
+				login(request, member)
+				return HttpResponseRedirect(reverse(edit,kwargs={
+					'key':member.key,
+					}))	
 	if request.method == 'POST':
 		form = MemberForm(request.POST, instance=member)
 		if form.is_valid():
 			form.save()
 			return HttpResponseRedirect(reverse(edit,kwargs={
-				'key':form.instance.key,
+				'key':member.key,
 				}))
 	form = MemberForm(instance=member)
 	return render(request, 'members/form.html', {
@@ -83,6 +97,21 @@ def create_or_login(request):
 	if not member:
 		member = Member(email=data['email'])
 		member.save()
+	member_url = reverse(edit,kwargs={
+		'key':member.key,
+		})
+	token_gen = PasswordResetTokenGenerator()
+	token = token_gen.make_token(member)
+	try:
+		send_mail(
+			'Your Nick Reid Directory Profile',
+			'Follow this link to update your profile: %s?token=%s' % (member_url, token),
+			'admin@nickreid.com',
+			[member.email],
+			fail_silently=False,
+			)
+	except:
+		messages.error(request, 'There was an error sending email to %s', member.email)
 	messages.success(request, 'An email has been sent to %s.' % (member.email))
 	return HttpResponseRedirect(reverse(list))
 

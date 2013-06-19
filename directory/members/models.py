@@ -13,7 +13,9 @@ class Member(User):
 	title = models.CharField(null=True, default="", max_length=50)
 	website = models.CharField(max_length=250)
 
-	def save(self):
+	def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+		if not self.password:
+			self.password = random_id(ID_FIELD_LENGTH)
 		if not self.key:
 			self.key = random_id(ID_FIELD_LENGTH)
 		if not self.username:
