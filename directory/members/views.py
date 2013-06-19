@@ -43,7 +43,12 @@ def make_edit_form():
 			fields = ['name', 'email', 'title', 'website']
 	return MemberForm
 
-
+def delete(request, key=None):
+	member = get_object_or_404(Member, key=key)
+	member_name = member.name
+	member.delete()
+	messages.success(request, '%s has been deleted.' % (member_name))
+	return HttpResponseRedirect(reverse(list))
 
 def list(request, visible=5):
 	if 'member' in request.REQUEST:

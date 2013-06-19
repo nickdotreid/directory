@@ -8,4 +8,7 @@
 		<p>Please create a new profile below.</p>
 	{% endif %}
 	{% crispy form %}
+	{% if member %}
+	<a href="{% url 'members.views.delete' member.key %}" class="button button-delete">Remove Profile</a>
+	{% endif %}
 {% endblock content %}
