@@ -2,6 +2,8 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+	<p>Your current profile</p>
+	{% include 'members/detail.html' %}
 	<p>Please edit your information below.</p>
 	{% crispy form %}
 	<a href="{% url 'members.views.delete' member.key %}" class="button button-delete">Remove Profile</a>

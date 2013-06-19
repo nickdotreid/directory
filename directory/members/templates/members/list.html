@@ -5,6 +5,6 @@
 	{{block.super}}
 	{% crispy form %}
 	{% for member in members  %}
-	<a href="member.url">{{member.name}}</a>
+	{% include 'members/detail.html' with member=member %}
 	{% endfor %}
 {% endblock content %}

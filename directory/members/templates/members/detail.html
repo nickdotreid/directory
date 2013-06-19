@@ -1,15 +1,5 @@
-{% extends "base.html" %}
-
-{% block content %}
-	<a href="{{member.website}}">Visit {{member.name}}'s website</a>
-	{% if members %}
-	<div class="others">
-		<h2>Other Nick Reids</h2>
-		<ul>
-		{% for member in members %}
-			<li><a href="member.website">{{member.name}}</a></li>
-		{% endfor %}
-		</ul>
-	</div>
-	{% endif %}
-{% endblock content %}
+{% load gravatar %}
+<a class="member" href="{{member.website}}">
+	<img src="{% gravatar_for_user member %}" alt="" class="gravatar member-icon" />
+	<span class="title member-title">{{member.name}}</span>
+</a>
