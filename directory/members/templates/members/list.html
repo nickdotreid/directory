@@ -1,7 +1,9 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 	{{block.super}}
+	{% crispy form %}
 	{% for member in members  %}
 	<a href="member.url">{{member.name}}</a>
 	{% endfor %}

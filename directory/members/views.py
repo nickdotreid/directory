@@ -5,6 +5,8 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 import json
 
+from django import forms
+
 from django.views.decorators.csrf import csrf_protect
 
 from crispy_forms.helper import FormHelper
@@ -32,15 +34,14 @@ def edit(request, key=None):
 
 from django.forms import ModelForm
 def make_edit_form():
-	class MemberForm(ModelForm):
+	class MemberForm(forms.ModelForm):
 		def __init__(self, *args, **kwargs):
-			super(ModelForm, self).__init__(*args, **kwargs)
+			super(forms.ModelForm, self).__init__(*args, **kwargs)
 			self.helper = FormHelper()
-
 			self.helper.add_input(Submit('submit', 'Save'))
 		class Meta:
 			model = Member
-			fields = ['name', 'email', 'title', 'website']
+			fields = ['name', 'title', 'website']
 	return MemberForm
 
 def delete(request, key=None):
@@ -70,4 +71,29 @@ def list(request, visible=5):
 			)
 	return render(request, 'members/list.html',{
 			'members': members,
+			'form':EmailForm(),
 		})
+
+def create_or_login(request):
+	if not request.method == 'POST':
+		return HttpResponseRedirect(reverse(list))
+	form = EmailForm(request.POST)
+	if not form.is_valid():
+		return render(request, 'members/login.html',{
+			'form':form,
+		})
+	data = form.cleaned_data
+	member = get_object_or_None(Member, email=data['email'])
+	if not member:
+		member = Member(email=data['email'])
+		member.save()
+	messages.success(request, 'An email has been sent to %s.' % (member.email))
+	return HttpResponseRedirect(reverse(list))
+
+class EmailForm(forms.Form):
+	def __init__(self, *args, **kwargs):
+			super(forms.Form, self).__init__(*args, **kwargs)
+			self.helper = FormHelper()
+			self.helper.form_action = reverse(create_or_login)
+			self.helper.add_input(Submit('submit', 'Send'))
+	email = forms.EmailField(label='Email address', required=True)
